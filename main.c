@@ -15,15 +15,15 @@
 
 Integer main(Integer argumentCounter, StringArray argumentVector)
 {
-	String theBuffer;		     /* Buffer to store the input from the user */
+	String theBuffer;			 /* Buffer to store the input from the user */
 	StringArray theGivenCommand; /* Array to store the parsed tokens */
-	Integer theCondition;	     /* Condition to store the exit status */
-	Integer theIndex;		     /* Index to store the number of tokens */
+	Integer theCondition;		 /* Condition to store the exit status */
+	Integer theIndex;			 /* Index to store the number of tokens */
 	/* Initialize variables with NULL and ZERO */
-	NULL_VARIABLE(theBuffer);	  /* By NULL */
+	NULL_VARIABLE(theBuffer);		/* By NULL */
 	NULL_VARIABLE(theGivenCommand); /* By NULL */
-	ZERO_VARIABLE(theCondition);	  /* By ZERO */
-	ZERO_VARIABLE(theIndex);	  /* By ZERO */
+	ZERO_VARIABLE(theCondition);	/* By ZERO */
+	ZERO_VARIABLE(theIndex);		/* By ZERO */
 	/* Ignore the command line arguments */
 	unused(argumentCounter);
 	/* Infinite loop for continuous user input and command execution */
@@ -37,9 +37,22 @@ Integer main(Integer argumentCounter, StringArray argumentVector)
 			/* If the buffer is empty, check if it's a */
 			/* terminal and return 0 or the condition */
 			return (is_It_A_Terminal(STDIN_FILENO)
-				  ? write(STDOUT_FILENO, NEW_LINE, ONE),
-				  ZERO : theCondition);
+					? write(STDOUT_FILENO, NEW_LINE, ONE),
+					ZERO : theCondition);
 		}
-		
+		/* Increment the index by one */
+		INCREASE_BY_ONE(theIndex);
+		/* Remove comments from the input */
+		theBuffer = remove_Comments(theBuffer);
+		/* Parse the command into tokens */
+		theGivenCommand = parse_Command_Into_Tokens(theBuffer);
+		/* Check if the command is empty */
+		if (!theGivenCommand)
+		{
+			/* Continue to the next iteration if the command is empty */
+			continue;
+		}
+		/* Execute the parsed command */
+		execute_Command(theGivenCommand, argumentVector, &theCondition, theIndex);
 	}
 }
